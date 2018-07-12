@@ -13,7 +13,7 @@ def spec_peak(S, fre, ti):
     fp = iterate_structure(fp, 10)
     
     count, bin_edges = np.histogram(np.log(S.flatten()), len(S.flatten())/2, density=True)
-    cumulative_distr = np.cumsum(counts, np.diff(bin_edges))
+    cumulative_distr = np.cumsum(count, np.diff(bin_edges))
     
     frac_cut = 0.9
     bin_index_of_cutoff = np.searchsorted(cumulative_distr, frac_cut)
