@@ -72,4 +72,4 @@ def add_mp3(path, db):
         err_msg = "The mp3 path" + str(path) + "does not exist"
         raise AssertionError(err_msg)
     Y = input_mp3(path)
-    Y
+    pass
