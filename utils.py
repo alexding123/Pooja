@@ -9,6 +9,8 @@ def input_mp3(file_path):
     """ Loads an mp3 file in the given path
     """
     audio, _ = librosa.load(file_path, SAMPLING_RATE, mono=True)
+    # scale to 2^15 if not already in such a format
+    audio = audio * (2**15) if np.max(audio) <= 1 else audio
     # saving the digitizes audio data as a numpy array
     return audio
 
