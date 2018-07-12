@@ -1,5 +1,6 @@
 import pickle
 from pathlib import Path
+from utils import input_mp3
 
 root = Path(".")
 database_path = root / "database.txt"
@@ -67,3 +68,8 @@ def add_mp3(path, db):
         db: dict
             The database to be stored
     """
+    if not path.exists():
+        err_msg = "The mp3 path" + str(path) + "does not exist"
+        raise AssertionError(err_msg)
+    Y = input_mp3(path)
+    Y
