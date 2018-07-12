@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def peaks_to_fingerprints(row, col):
+def peaks_to_fingerprints(rows, cols):
     """ Peaks to Fingerprints
         Parameters
         ----------
@@ -10,8 +10,16 @@ def peaks_to_fingerprints(row, col):
         Returns
         -------
         fingerprints : list of ((fn, fn+i, tn+i - tn), tn) """
-    fanout = 10
+    max_fanout = 10
     fingerprints = []
-    for i, time in enumerate(row):
-        fingerprints.append(((col[i], col[i + n], row[i + n] - time), time) for n in np.arange(1, fanout))
+    for i, r in enumerate(rows):
+        fanout = len(rows) - i if len(rows) - i < max_fanout else max_fanout
+        for n in np.arange(1,fanout):
+            fingerprints.append(((cols[i], cols[i + n], rows[i + n] - r), r))
     return fingerprints
+
+
+
+
+
+
