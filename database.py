@@ -1,6 +1,6 @@
 import pickle
 from pathlib import Path
-from utils import input_mp3
+from utils import input_mp3, audio_to_spectrogram
 
 root = Path(".")
 database_path = root / "database.txt"
@@ -71,5 +71,7 @@ def add_mp3(path, db):
     if not path.exists():
         err_msg = "The mp3 path" + str(path) + "does not exist"
         raise AssertionError(err_msg)
-    Y = input_mp3(path)
+    S = audio_to_spectrogram(input_mp3(path))
+    
+    
     pass
