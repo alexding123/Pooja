@@ -1,3 +1,11 @@
+import pickle
+from pathlib import Path
+from utils import input_mp3
+
+root = Path(".")
+database_path = root / "database.txt"
+print(database_path)
+
 def load_database(path):
     """ Loads a pickled dictionary that acts as the fingerprint databse
 
@@ -10,6 +18,13 @@ def load_database(path):
         -------
         dict((fn,fm,tm-tn)->list[(song_ID, tmatch)])
     """
+    if not path.exists():
+        err_msg = "The database path does not exist"
+        raise AssertionError(err_msg)
+    
+    with open(path, mode="rb") as f:
+        db = pickle.load(f)
+    return db
 
 def store_database(path, db):
     """ Stores a database (dictionary) as a pickled file
@@ -26,6 +41,12 @@ def store_database(path, db):
         -------
         dict((fn,fm,tm-tn)->list[(song_ID, tmatch)])
     """
+    if not path.exists():
+        err_msg = "The database path does not exist"
+        raise AssertionError(err_msg)
+    
+    with open(path, mode="wb") as f:
+        pickle.dump(db, f)
 
 def database():
     """ A fake constructor function that returns our database
@@ -36,4 +57,19 @@ def database():
     """
     return dict()
 
-def 
+def add_mp3(path, db):
+    """ Adds a song from a path into the database
+        
+        Parameters
+        ----------
+        path: pathlib.Path 
+            The path to the location where the song is
+        
+        db: dict
+            The database to be stored
+    """
+    if not path.exists():
+        err_msg = "The mp3 path" + str(path) + "does not exist"
+        raise AssertionError(err_msg)
+    Y = input_mp3(path)
+    Y
