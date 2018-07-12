@@ -21,5 +21,3 @@ def peaks_to_fingerprints(rows, cols):
 
 
 
-
-

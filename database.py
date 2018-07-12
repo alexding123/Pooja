@@ -79,7 +79,10 @@ def add_mp3(path, db, song_info):
     rows, cols = spectrogram_to_peaks(S)
     fingerprints = peaks_to_fingerprints(rows,cols)
     for key, t_match in fingerprints:
-        db[key] = (md5, t_match)
+        if key in db:
+            db[key].append((md5, t_match))
+        else:
+            db[key] = [(md5, t_match)]
     
 
 
