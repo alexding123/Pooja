@@ -5,7 +5,6 @@ import hashlib
 
 root = Path(".")
 database_path = root / "database.txt"
-print(database_path)
 
 def load_database(path):
     """ Loads a pickled dictionary that acts as the fingerprint databse
