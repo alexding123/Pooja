@@ -2,6 +2,8 @@ import librosa
 import numpy as np 
 import matplotlib.mlab as mlab
 from microphone import record_audio, play_audio
+from scipy.ndimage.filters import maximum_filter
+from scipy.ndimage.morphology import generate_binary_structure, binary_erosion, iterate_structure
 
 SAMPLING_RATE = 44100
 
@@ -28,3 +30,47 @@ def audio_to_spectrogram(audio):
                                       window=mlab.window_hanning,
                                       noverlap=4096 // 2)
     return S
+
+def find_cutoff(S):
+    count, bin_edges = np.histogram(np.log(S.flatten()), len(S.flatten())/2, density=True)
+    cumulative_distr = np.cumsum(count, np.diff(bin_edges))
+    
+    frac_cut = 0.9
+    bin_index_of_cutoff = np.searchsorted(cumulative_distr, frac_cut)
+    # given the bin-index, we want the associated log-amplitude value for that bin
+    cutoff_log_amplitude = bin_edges[bin_index_of_cutoff]
+    return cutoff_log_amplitude
+
+def spectrogram_to_peaks(S):
+    """Parameters: 
+    S = spectrogram
+    fre = frequencies
+    ti = times"""
+       
+    cutoff = find_cutoff(S)
+    
+    fp = generate_binary_structure(2, 2)
+    fp = iterate_structure(fp, 10)
+
+    peaks = (S == maximum_filter(S, footprint=fp)) & (np.log(S) > cutoff)
+    
+    return np.where(peaks)
+
+def peaks_to_fingerprints(rows, cols):
+    """ Peaks to Fingerprints
+
+        Parameters
+        ----------
+        row: time bin of the peaks - np.array
+        col: frequency bin of the peaks - np.array
+
+        Returns
+        -------
+        fingerprints : list of ((fn, fn+i, tn+i - tn), tn) """
+    max_fanout = 10
+    fingerprints = []
+    for i, r in enumerate(rows):
+        fanout = len(rows) - i if len(rows) - i < max_fanout else max_fanout
+        for n in np.arange(1,fanout+1):
+            fingerprints.append(((cols[i], cols[i + n], rows[i + n] - r), r))
+    return fingerprints

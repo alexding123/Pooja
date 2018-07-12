@@ -14,7 +14,7 @@ def peaks_to_fingerprints(rows, cols):
     fingerprints = []
     for i, r in enumerate(rows):
         fanout = len(rows) - i if len(rows) - i < max_fanout else max_fanout
-        for n in np.arange(1,fanout):
+        for n in np.arange(1,fanout+1):
             fingerprints.append(((cols[i], cols[i + n], rows[i + n] - r), r))
     return fingerprints
 
