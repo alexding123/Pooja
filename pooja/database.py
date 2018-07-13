@@ -33,7 +33,7 @@ class database:
         with open(path, mode="rb") as f:
             db = pickle.load(f)
             self.fps = db.fps
-            self.song_info = db.fps
+            self.song_info = db.song_info
         
 
     def store(self, path):
