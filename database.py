@@ -81,7 +81,6 @@ def add_mp3(path, db):
         else:
             db.fps[key] = [(id, t_match)]
 
-    
 def match_song(audio, db):
     S = audio_to_spectrogram(audio)
     rows, cols = spectrogram_to_peaks(S)
