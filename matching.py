@@ -1,5 +1,5 @@
-from utils import *
-from collectiosn import Counter
+from utils import audio_to_spectrogram, spectrogram_to_peaks, peaks_to_fingerprints
+from collections import Counter
 def match_song(audio, db):
     S = audio_to_spectrogram(audio)
     rows, cols = spectrogram_to_peaks(S)
