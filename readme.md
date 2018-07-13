@@ -5,3 +5,7 @@ Team name: TBD
 
 Team people, please run:
 `python setup.py develop`
+
+TODOs:
+
+1. Utility functions for loading mp3's

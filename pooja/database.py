@@ -34,7 +34,7 @@ class database:
             self = pickle.load(f)
         
 
-    def store_database(self, path):
+    def store(self, path):
         """ Stores a database (dictionary) as a pickled file
 
             Parameters
