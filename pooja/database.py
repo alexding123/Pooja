@@ -85,6 +85,15 @@ class database:
                 self.fps[key] = [(id, t_match)]
                 
     def match_song(self, audio):
+        """Gets an audio file and turns compares it
+            Parameters:
+            ----------
+            audio: the audio file that is to be compared to the self as a np.array
+
+            Returns:
+            -------
+            Returns a string depending on what is the most common song. If the threshold is not met, it says no song is founds
+        """
         S = audio_to_spectrogram(audio)
         freqs, times = spectrogram_to_peaks(S)
         audio_fps = peaks_to_fingerprints(freqs,times)
