@@ -74,22 +74,13 @@ def add_mp3(path, db):
     S = audio_to_spectrogram(input_mp3(path))
     rows, cols = spectrogram_to_peaks(S)
     fingerprints = peaks_to_fingerprints(rows,cols)
-<<<<<<< HEAD
     #print(fingerprints[:10])
     for key, t_match in fingerprints[:10]:
-        if key in songs.fps:
-            songs.fps[key].append((id, t_match))
-        else:
-            songs.fps[key] = [(id, t_match)]
-
-=======
-
-    for key, t_match in fingerprints:
         if key in db.fps:
             db.fps[key].append((id, t_match))
         else:
             db.fps[key] = [(id, t_match)]
->>>>>>> 593e6f648023aad32653511da9a0c3bb828ed55e
+
     
 def match_song(audio, db):
     S = audio_to_spectrogram(audio)
@@ -98,23 +89,12 @@ def match_song(audio, db):
     #print(audio_fps[:10])
     C = Counter()
     for finger_print, t in audio_fps:
-<<<<<<< HEAD
-        if finger_print in songs.fps:
+        if finger_print in db.fps:
             #print(finger_print)
-            list = songs.fps[finger_print]
+            list = db.fps[finger_print]
             for id, t_match in list:
                 t_diff = t_match - t
                 C[(id, t_diff)] += 1
                 
-    return songs.song_info[C.most_common(1)[0][0][0]]
+    return db.song_info[C.most_common(1)[0][0][0]]
     
-=======
-        if finger_print in db.fps:
-            print(finger_print)
-            id, t_match = db.fps[finger_print]
-            t_diff = t_match - t
-            C[(id, t_diff)] += 1
-    print(C)
-    most_common, _ = C.most_common(1)
-    return db.song_info[most_common]
->>>>>>> 593e6f648023aad32653511da9a0c3bb828ed55e
