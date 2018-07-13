@@ -3,5 +3,5 @@
 Team members: Alex Chen, Alex Ding, Denver Blake, Jerry Han  
 Team name: TBD
 
-Run:
+Team people, please run:
 `python setup.py develop`
