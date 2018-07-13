@@ -17,17 +17,18 @@ def load_database(path):
 
         Returns
         -------
-        dict((fn,fm,tm-tn)->list[(song_ID, tmatch)])
+        Database
+            The database containing song info and fingerprints
     """
     if not path.exists():
         err_msg = "The database path does not exist"
         raise AssertionError(err_msg)
     
     with open(path, mode="rb") as f:
-        db, song_info = pickle.load(f)
-    return db, song_info
+        db = pickle.load(f)
+    return db
 
-def store_database(path, db, song_info):
+def store_database(path, db):
     """ Stores a database (dictionary) as a pickled file
 
         Parameters
@@ -35,26 +36,20 @@ def store_database(path, db, song_info):
         path: pathlib.Path 
             The path to the location where the database is to be stored
         
-        db: dict
+        db: Database
             The database to be stored
 
-        Returns
-        -------
-        dict((fn,fm,tm-tn)->list[(song_ID, tmatch)])
     """
-    if not path.exists():
-        err_msg = "The database path does not exist"
-        raise AssertionError(err_msg)
     
     with open(path, mode="wb") as f:
-        pickle.dump((db, song_info), f)
+        pickle.dump(db, f)
 
 class database:
     def __init__(self):
         self.fps = dict()
         self.song_info = list()
 
-def add_mp3(path, db):
+def add_mp3(path, songs):
     """ Adds a song from a path into the database
         
         Parameters
@@ -71,29 +66,32 @@ def add_mp3(path, db):
         raise AssertionError(err_msg)
 
     # index the song
-    id = len(db.song_info)
+    id = len(songs.song_info)
     song_name = path.stem
-    db.song_info.append(song_name) # we'll make this fancy later
+    songs.song_info.append(song_name) # we'll make this fancy later
 
     # fingerprint mp3
     S = audio_to_spectrogram(input_mp3(path))
     rows, cols = spectrogram_to_peaks(S)
     fingerprints = peaks_to_fingerprints(rows,cols)
+
     for key, t_match in fingerprints:
-        if key in db.fps:
-            db.fps[key].append((id, t_match))
+        if key in songs.fps:
+            songs.fps[key].append((id, t_match))
         else:
-            db.fps[key] = [(id, t_match)]
+            songs.fps[key] = [(id, t_match)]
     
-def match_song(audio, db):
+def match_song(audio, songs):
     S = audio_to_spectrogram(audio)
     rows, cols = spectrogram_to_peaks(S)
-    audio_fps = peaks_to_fingerprints(rows, cols)
+    audio_fps = peaks_to_fingerprints(rows,cols)
     C = Counter()
-    for finger_print, t in (audio_fps):
-        if finger_print in db:
-            id, t_match = db.fps[finger_print]
+    for finger_print, t in audio_fps:
+        if finger_print in songs.fps:
+            print(finger_print)
+            id, t_match = songs.fps[finger_print]
             t_diff = t_match - t
             C[(id, t_diff)] += 1
+    print(C)
     most_common, _ = C.most_common(1)
-    return db.song_info[most_common]
+    return songs.song_info[most_common]

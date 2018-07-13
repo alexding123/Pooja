@@ -12,6 +12,7 @@ def input_mp3(file_path):
     """
     audio, _ = librosa.load(file_path, SAMPLING_RATE, mono=True)
     # scale to 2^15 if not already in such a format
+    
     audio = audio * (2**15) if np.max(audio) <= 1 else audio
     # saving the digitizes audio data as a numpy array
     return audio
@@ -32,8 +33,10 @@ def audio_to_spectrogram(audio):
     return S
 
 def find_cutoff(S):
-    count, bin_edges = np.histogram(np.log(S.flatten()), len(S.flatten())/2, density=True)
-    cumulative_distr = np.cumsum(count, np.diff(bin_edges))
+    N = S.size
+    count, bin_edges = np.histogram(np.log(S.flatten()), N//2, normed=True)
+
+    cumulative_distr = np.cumsum(count*np.diff(bin_edges))
     
     frac_cut = 0.9
     bin_index_of_cutoff = np.searchsorted(cumulative_distr, frac_cut)
@@ -46,7 +49,8 @@ def spectrogram_to_peaks(S):
     S = spectrogram
     fre = frequencies
     ti = times"""
-       
+
+    S = S + 10e-20 # add a really small value to avoid 0s
     cutoff = find_cutoff(S)
     
     fp = generate_binary_structure(2, 2)
@@ -70,7 +74,7 @@ def peaks_to_fingerprints(rows, cols):
     max_fanout = 10
     fingerprints = []
     for i, r in enumerate(rows):
-        fanout = len(rows) - i if len(rows) - i < max_fanout else max_fanout
-        for n in np.arange(1,fanout+1):
+        fanout = len(rows) - i if len(rows) - i < (max_fanout+1) else (max_fanout+1)
+        for n in np.arange(1,fanout):
             fingerprints.append(((cols[i], cols[i + n], rows[i + n] - r), r))
     return fingerprints
