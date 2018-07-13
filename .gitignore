@@ -42,3 +42,6 @@ ehthumbs.db
 Thumbs.db
 
 *.mp3
+MP3s
+.ipynb_checkpoints
+_pycache_/*
