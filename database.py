@@ -75,16 +75,13 @@ def add_mp3(path, db):
     rows, cols = spectrogram_to_peaks(S)
     fingerprints = peaks_to_fingerprints(rows,cols)
     #print(fingerprints[:10])
-    for key, t_match in fingerprints[:10]:
+    for key, t_match in fingerprints:
         if key in db.fps:
             db.fps[key].append((id, t_match))
         else:
             db.fps[key] = [(id, t_match)]
 
-<<<<<<< HEAD
-=======
-    
->>>>>>> 9904f68fc7d595a98f5821608b36267e7d7a7b13
+
 def match_song(audio, db):
     S = audio_to_spectrogram(audio)
     rows, cols = spectrogram_to_peaks(S)
@@ -98,10 +95,6 @@ def match_song(audio, db):
             for id, t_match in list:
                 t_diff = t_match - t
                 C[(id, t_diff)] += 1
-                
-<<<<<<< HEAD
+
     return db.song_info[C.most_common(1)[0][0][0]]
-=======
-    return db.song_info[C.most_common(1)[0][0][0]]
-    
->>>>>>> 9904f68fc7d595a98f5821608b36267e7d7a7b13
+
