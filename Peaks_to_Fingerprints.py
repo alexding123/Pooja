@@ -1,5 +1,5 @@
 import numpy as np
-
+import mygrad
 
 def peaks_to_fingerprints(rows, cols):
     """ Peaks to Fingerprints
@@ -13,8 +13,8 @@ def peaks_to_fingerprints(rows, cols):
     max_fanout = 10
     fingerprints = []
     for i, r in enumerate(rows):
-        fanout = len(rows) - i if len(rows) - i < max_fanout else max_fanout
-        for n in np.arange(1,fanout+1):
+        fanout = len(rows) - i if len(rows) - i < max_fanout+1 else max_fanout+1
+        for n in np.arange(1,fanout):
             fingerprints.append(((cols[i], cols[i + n], rows[i + n] - r), r))
     return fingerprints
 
