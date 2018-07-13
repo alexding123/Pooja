@@ -59,8 +59,7 @@ def spectrogram_to_peaks(S):
     S = S + 10e-20 # add a really small value to avoid 0s
     cutoff = find_cutoff(S)
     
-    fp = generate_binary_structure(2, 2)
-    fp = iterate_structure(fp, 10)
+    fp = np.full((30,15), True)
 
     peaks = (S == maximum_filter(S, footprint=fp)) & (np.log(S) > cutoff)
     
@@ -77,7 +76,7 @@ def peaks_to_fingerprints(freqs, times):
         Returns
         -------
         fingerprints : list of ((fn, fn+i, tn+i - tn), tn) """
-    max_fanout = 100
+    max_fanout = 15
     fingerprints = []
     for i, r in enumerate(times):
         fanout = len(times) - i if len(freqs) - i < (max_fanout+1) else (max_fanout+1)
