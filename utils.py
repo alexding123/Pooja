@@ -58,7 +58,7 @@ def spectrogram_to_peaks(S):
     
     return np.where(peaks)
 
-def peaks_to_fingerprints(rows, cols):
+def peaks_to_fingerprints(freqs, times):
     """ Peaks to Fingerprints
 
         Parameters
@@ -71,8 +71,8 @@ def peaks_to_fingerprints(rows, cols):
         fingerprints : list of ((fn, fn+i, tn+i - tn), tn) """
     max_fanout = 30
     fingerprints = []
-    for i, r in enumerate(rows):
-        fanout = len(rows) - i if len(rows) - i < (max_fanout+1) else (max_fanout+1)
+    for i, r in enumerate(times):
+        fanout = len(times) - i if len(freqs) - i < (max_fanout+1) else (max_fanout+1)
         for n in np.arange(1,fanout):
-            fingerprints.append(((cols[i], cols[i + n], rows[i + n] - r), r))
+            fingerprints.append(((freqs[i], freqs[i + n], times[i + n] - r), r))
     return fingerprints
