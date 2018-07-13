@@ -1,7 +1,7 @@
 import pickle
 from pathlib import Path
 from collections import Counter
-from utils import input_mp3, audio_to_spectrogram, spectrogram_to_peaks, peaks_to_fingerprints
+from .utils import input_mp3, audio_to_spectrogram, spectrogram_to_peaks, peaks_to_fingerprints, to_path_if_not_already
 from hashlib import md5
 
 root = Path(".")
@@ -25,6 +25,7 @@ class database:
             Database
                 The database containing song info and fingerprints
         """
+        path = to_path_if_not_already(path)
         if not path.exists():
             err_msg = "The database path does not exist"
             raise AssertionError(err_msg)
@@ -45,7 +46,7 @@ class database:
                 The database to be stored
 
         """
-        
+        path = to_path_if_not_already(path)
         with open(path, mode="wb") as f:
             pickle.dump(self, f)
             
@@ -60,7 +61,7 @@ class database:
             db: dict
                 The database to be stored
         """
-
+        path = to_path_if_not_already(path)
         if not path.exists():
             err_msg = "The mp3 path" + str(path) + "does not exist"
             raise AssertionError(err_msg)

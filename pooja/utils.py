@@ -1,15 +1,23 @@
 import librosa
 import numpy as np 
 import matplotlib.mlab as mlab
+from pathlib import Path
 from microphone import record_audio, play_audio
 from scipy.ndimage.filters import maximum_filter
 from scipy.ndimage.morphology import generate_binary_structure, binary_erosion, iterate_structure
 
 SAMPLING_RATE = 44100
 
+def to_path_if_not_already(path):
+    if isinstance(path, Path):
+        return path
+    else:
+        return Path(path)
+
 def input_mp3(file_path):
     """ Loads an mp3 file in the given path
     """
+    file_path = to_path_if_not_already(file_path)
     audio, _ = librosa.load(file_path, SAMPLING_RATE, mono=True)
     # scale to 2^15 if not already in such a format
     
