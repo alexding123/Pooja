@@ -13,4 +13,4 @@ db.store_database(Path("test"), songs)
 
 mp3 = utils.input_mp3(Path("MP3s/Popper Requiem for three cellos and piano.mp3"))
 #print(np.max(mp3[44100*10:44100*15]))
-db.match_song(mp3[44100*10:44100*15], songs)
+print(db.match_song(mp3[:44100*15], songs))
