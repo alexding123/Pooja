@@ -31,7 +31,9 @@ class database:
             raise AssertionError(err_msg)
         
         with open(path, mode="rb") as f:
-            self = pickle.load(f)
+            db = pickle.load(f)
+            self.fps = db.fps
+            self.song_info = db.fps
         
 
     def store(self, path):
@@ -95,7 +97,7 @@ class database:
                     C[(id, t_diff)] += 1
         if len(C.most_common()) == 0:
             return "No song found"
-
+        print(C)
         return self.song_info[C.most_common(1)[0][0][0]]
 
 
