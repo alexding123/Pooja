@@ -2,7 +2,7 @@ import pickle
 from pathlib import Path
 from collections import Counter
 from utils import input_mp3, audio_to_spectrogram, spectrogram_to_peaks, peaks_to_fingerprints
-import hashlib
+from hashlib import md5
 
 root = Path(".")
 database_path = root / "database.txt"
@@ -52,7 +52,7 @@ def store_database(path, db, song_info):
 class database:
     def __init__(self):
         self.fps = dict()
-        self.song_info = dict()
+        self.song_info = list()
 
 def add_mp3(path, db):
     """ Adds a song from a path into the database
@@ -70,10 +70,10 @@ def add_mp3(path, db):
         err_msg = "The mp3 path" + str(path) + "does not exist"
         raise AssertionError(err_msg)
 
-    # find song's md5
-    md5 = hashlib.md5(path).hexdigest()
+    # index the song
+    id = len(db.song_info)
     song_name = path.stem
-    db.song_info[md5] = song_name # we'll make this fancy later
+    db.song_info.append(song_name) # we'll make this fancy later
 
     # fingerprint mp3
     S = audio_to_spectrogram(input_mp3(path))
@@ -81,19 +81,19 @@ def add_mp3(path, db):
     fingerprints = peaks_to_fingerprints(rows,cols)
     for key, t_match in fingerprints:
         if key in db.fps:
-            db.fps[key].append((md5, t_match))
+            db.fps[key].append((id, t_match))
         else:
-            db.fps[key] = [(md5, t_match)]
+            db.fps[key] = [(id, t_match)]
     
-def match_song(audio, db, song_info):
+def match_song(audio, db):
     S = audio_to_spectrogram(audio)
     rows, cols = spectrogram_to_peaks(S)
     audio_fps = peaks_to_fingerprints(rows, cols)
     C = Counter()
     for finger_print, t in (audio_fps):
         if finger_print in db:
-            md5, t_match = db[finger_print]
+            id, t_match = db.fps[finger_print]
             t_diff = t_match - t
-            C[(md5, t_diff)] += 1
+            C[(id, t_diff)] += 1
     most_common, _ = C.most_common(1)
-    return song_info[most_common]
+    return db.song_info[most_common]
