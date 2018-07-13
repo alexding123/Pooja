@@ -88,7 +88,6 @@ class database:
         S = audio_to_spectrogram(audio)
         freqs, times = spectrogram_to_peaks(S)
         audio_fps = peaks_to_fingerprints(freqs,times)
-        print(len(audio_fps))
         C = Counter()
         for finger_print, t in audio_fps:
             if finger_print in self.fps:
@@ -98,7 +97,6 @@ class database:
                     C[(id, t_diff)] += 1
         if len(C.most_common()) == 0:
             return "No song found"
-        print(C)
         return self.song_info[C.most_common(1)[0][0][0]]
 
 
