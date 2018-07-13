@@ -34,7 +34,6 @@ def audio_to_spectrogram(audio):
 def find_cutoff(S):
     N = S.size
     count, bin_edges = np.histogram(np.log(S.flatten()), N//2, normed=True)
-
     cumulative_distr = np.cumsum(count*np.diff(bin_edges))
     
     frac_cut = 0.9
@@ -70,7 +69,7 @@ def peaks_to_fingerprints(rows, cols):
         Returns
         -------
         fingerprints : list of ((fn, fn+i, tn+i - tn), tn) """
-    max_fanout = 10
+    max_fanout = 30
     fingerprints = []
     for i, r in enumerate(rows):
         fanout = len(rows) - i if len(rows) - i < (max_fanout+1) else (max_fanout+1)

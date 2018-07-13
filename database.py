@@ -86,10 +86,8 @@ def match_song(audio, db):
     rows, cols = spectrogram_to_peaks(S)
     audio_fps = peaks_to_fingerprints(rows,cols)
     C = Counter()
-    print(audio_fps)
     for finger_print, t in audio_fps:
         if finger_print in db.fps:
-            print(db.fps)
             l = db.fps[finger_print]
             for id, t_match in l:
                 t_diff = t_match - t
