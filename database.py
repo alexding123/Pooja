@@ -49,7 +49,7 @@ class database:
         self.fps = dict()
         self.song_info = list()
 
-def add_mp3(path, songs):
+def add_mp3(path, db):
     """ Adds a song from a path into the database
         
         Parameters
@@ -66,14 +66,15 @@ def add_mp3(path, songs):
         raise AssertionError(err_msg)
 
     # index the song
-    id = len(songs.song_info)
+    id = len(db.song_info)
     song_name = path.stem
-    songs.song_info.append(song_name) # we'll make this fancy later
+    db.song_info.append(song_name) # we'll make this fancy later
 
     # fingerprint mp3
     S = audio_to_spectrogram(input_mp3(path))
     rows, cols = spectrogram_to_peaks(S)
     fingerprints = peaks_to_fingerprints(rows,cols)
+<<<<<<< HEAD
     #print(fingerprints[:10])
     for key, t_match in fingerprints[:10]:
         if key in songs.fps:
@@ -81,14 +82,23 @@ def add_mp3(path, songs):
         else:
             songs.fps[key] = [(id, t_match)]
 
+=======
+
+    for key, t_match in fingerprints:
+        if key in db.fps:
+            db.fps[key].append((id, t_match))
+        else:
+            db.fps[key] = [(id, t_match)]
+>>>>>>> 593e6f648023aad32653511da9a0c3bb828ed55e
     
-def match_song(audio, songs):
+def match_song(audio, db):
     S = audio_to_spectrogram(audio)
     rows, cols = spectrogram_to_peaks(S)
     audio_fps = peaks_to_fingerprints(rows,cols)
     #print(audio_fps[:10])
     C = Counter()
     for finger_print, t in audio_fps:
+<<<<<<< HEAD
         if finger_print in songs.fps:
             #print(finger_print)
             list = songs.fps[finger_print]
@@ -98,3 +108,13 @@ def match_song(audio, songs):
                 
     return songs.song_info[C.most_common(1)[0][0][0]]
     
+=======
+        if finger_print in db.fps:
+            print(finger_print)
+            id, t_match = db.fps[finger_print]
+            t_diff = t_match - t
+            C[(id, t_diff)] += 1
+    print(C)
+    most_common, _ = C.most_common(1)
+    return db.song_info[most_common]
+>>>>>>> 593e6f648023aad32653511da9a0c3bb828ed55e
