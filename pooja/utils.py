@@ -16,6 +16,7 @@ def to_path_if_not_already(path):
 
 def input_mp3(file_path):
     """ Loads an mp3 file in the given path
+
         Parameters
         ----------
         file_path: path of the file in the form of a string or pathlib.path
@@ -24,6 +25,7 @@ def input_mp3(file_path):
         -------
         Audio: the audio of the file as a np.array
     """
+    
     file_path = to_path_if_not_already(file_path)
     audio, _ = librosa.load(file_path, SAMPLING_RATE, mono=True)
     # scale to 2^15 if not already in such a format
@@ -34,6 +36,7 @@ def input_mp3(file_path):
 
 def input_mic(listen_time):
     """ Records microphone input for a number of seconds
+
         Parameters
         ----------
         listen_time: integer of how long in seconds the clip is
@@ -42,13 +45,15 @@ def input_mic(listen_time):
         -------
         audio_data: the audio of the recorded clip as a np.array -1 to 1
     """
+
     frames, sample_rate = record_audio(listen_time)
     # saving the digitizes audio data as a numpy array
     audio_data = np.hstack([np.frombuffer(i, np.int16) for i in frames])
     return audio_data
 
 def audio_to_spectrogram(audio):
-    """Converts the audio to a spectrogram
+    """ Converts the audio to a spectrogram
+
         Parameters
         ----------
         audio: the audio of the file as a np.array
@@ -57,13 +62,15 @@ def audio_to_spectrogram(audio):
         -------
         S: the spectrogram of the audio file as a 2d np.array
     """
+
     S, freqs, times = mlab.specgram(audio, NFFT=4096, Fs=SAMPLING_RATE,
                                       window=mlab.window_hanning,
                                       noverlap=4096 // 2)
     return S
 
 def find_cutoff(S):
-    """Calculate the cutoffs given a spectrogram
+    """ Calculate the cutoffs given a spectrogram
+
         Parameters
         ----------
         S: the spectrogram as a 2d array
@@ -72,6 +79,7 @@ def find_cutoff(S):
         -------
         cutoff_log_amplitude: the threshold when cutting off as a number
     """
+
     N = S.size
     count, bin_edges = np.histogram(np.log(S.flatten()), N//2, normed=True)
     cumulative_distr = np.cumsum(count*np.diff(bin_edges))
@@ -83,7 +91,9 @@ def find_cutoff(S):
     return cutoff_log_amplitude
 
 def spectrogram_to_peaks(S):
-    """Finds the peaks of the spectrogram and returns an array holding their location
+    """ Finds the peaks of the spectrogram and returns an array holding 
+        their location
+
         Parameters:
         ----------
         S = spectrogram of the audio file
@@ -111,7 +121,9 @@ def peaks_to_fingerprints(freqs, times):
 
         Returns
         -------
-        fingerprints : list of ((fn, fn+i, tn+i - tn), tn) """
+        fingerprints : list of ((fn, fn+i, tn+i - tn), tn) 
+    """
+
     max_fanout = 10
     fingerprints = []
     for i, r in enumerate(times):

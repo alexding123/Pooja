@@ -8,9 +8,11 @@ root = Path(".")
 database_path = root / "data"
 
 class database:
-    def __init__(self):
+    def __init__(self, path=None):
         self.fps = dict()
         self.song_info = list()
+        if not path is None:
+            self.load(path)
 
     def load(self, path):
         """ Loads a pickled dictionary that acts as the fingerprint databse
