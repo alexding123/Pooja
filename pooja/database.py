@@ -110,7 +110,7 @@ class database:
         if len(C.most_common()) == 0:
             return "No song found"
         fp_count = C.most_common(1)[0][1]
-        if fp_count < length * 9:
+        if fp_count >= length * 9:
             return self.song_info[C.most_common(1)[0][0][0]]
         else:
             return None
