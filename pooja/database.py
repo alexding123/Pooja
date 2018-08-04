@@ -96,6 +96,7 @@ class database:
             -------
             Returns a string depending on what is the most common song. If the threshold is not met, it says no song is founds
         """
+        length = round(len(audio) / 44100)
         S = audio_to_spectrogram(audio)
         freqs, times = spectrogram_to_peaks(S)
         audio_fps = peaks_to_fingerprints(freqs,times)
@@ -108,6 +109,9 @@ class database:
                     C[(id, t_diff)] += 1
         if len(C.most_common()) == 0:
             return "No song found"
-        return self.song_info[C.most_common(1)[0][0][0]]
-
+        fp_count = C.most_common(1)[0][1]
+        if fp_count < length * 9:
+            return self.song_info[C.most_common(1)[0][0][0]]
+        else:
+            return None
 
